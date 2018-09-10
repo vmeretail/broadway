@@ -43,7 +43,8 @@ abstract class EventSourcedAggregateRoot implements AggregateRootInterface
             $this->getAggregateRootId(),
             $this->playhead,
             new Metadata([]),
-            $event
+            $event,
+            static::class
         );
     }
 
