@@ -36,6 +36,11 @@ final class DomainMessage
     /**
      * @var string
      */
+    private $aggregateType;
+
+    /**
+     * @var string
+     */
     private $id;
 
     /**
@@ -50,12 +55,13 @@ final class DomainMessage
      * @param mixed    $payload
      * @param DateTime $recordedOn
      */
-    public function __construct($id, int $playhead, Metadata $metadata, $payload, DateTime $recordedOn)
+    public function __construct($id, int $playhead, Metadata $metadata, $payload, $aggregateType, DateTime $recordedOn)
     {
         $this->id = (string) $id;
         $this->playhead = $playhead;
         $this->metadata = $metadata;
         $this->payload = $payload;
+        $this->aggregateType = $aggregateType;
         $this->recordedOn = $recordedOn;
     }
 
@@ -92,6 +98,14 @@ final class DomainMessage
     }
 
     /**
+     * @return string
+     */
+    public function getAggregateType(): string
+    {
+        return $this->aggregateType;
+    }
+
+    /**
      * @return DateTime
      */
     public function getRecordedOn(): DateTime
@@ -108,14 +122,16 @@ final class DomainMessage
     }
 
     /**
-     * @param mixed    $id
-     * @param int      $playhead
+     * @param $id
+     * @param int $playhead
      * @param Metadata $metadata
-     * @param mixed    $payload
+     * @param $payload
+     * @param string $aggregateType
+     * @return DomainMessage
      */
-    public static function recordNow($id, int $playhead, Metadata $metadata, $payload): self
+    public static function recordNow($id, int $playhead, Metadata $metadata, $payload, $aggregateType): self
     {
-        return new self($id, $playhead, $metadata, $payload, DateTime::now());
+        return new self($id, $playhead, $metadata, $payload, $aggregateType, DateTime::now());
     }
 
     /**
@@ -127,6 +143,6 @@ final class DomainMessage
     {
         $newMetadata = $this->metadata->merge($metadata);
 
-        return new self($this->id, $this->playhead, $newMetadata, $this->payload, $this->recordedOn);
+        return new self($this->id, $this->playhead, $newMetadata, $this->payload, $this->aggregateType, $this->recordedOn);
     }
 }
