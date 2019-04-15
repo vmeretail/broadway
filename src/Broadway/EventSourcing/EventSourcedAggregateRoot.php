@@ -126,4 +126,8 @@ abstract class EventSourcedAggregateRoot implements AggregateRootInterface
     {
         return $this->playhead;
     }
+
+    public function setPlayhead(int $playhead) {
+        $this->playhead = $playhead;
+    }
 }
