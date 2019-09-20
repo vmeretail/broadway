@@ -115,6 +115,27 @@ abstract class AbstractEventSourcingRepositoryTest extends TestCase
     /**
      * @test
      */
+    public function it_loads_an_aggregate_until_a_specific_playhead()
+    {
+        $this->eventStore->append(42, new DomainEventStream([
+            DomainMessage::recordNow(42, 0, new Metadata([]), new DidNumberEvent(1337)),
+        ]));
+        $this->eventStore->append(42, new DomainEventStream([
+            DomainMessage::recordNow(42, 1, new Metadata([]), new DidNumberEvent(1338)),
+        ]));
+
+        $aggregate = $this->repository->loadUntilPlayhead(42, 0);
+
+        $expectedAggregate = $this->createAggregate();
+        $expectedAggregate->apply(new DidNumberEvent(1337));
+        $expectedAggregate->getUncommittedEvents();
+
+        $this->assertEquals($expectedAggregate, $aggregate);
+    }
+
+    /**
+     * @test
+     */
     public function it_throws_an_exception_if_aggregate_was_not_found()
     {
         $this->expectException(AggregateNotFoundException::class);

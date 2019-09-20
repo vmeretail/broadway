@@ -74,6 +74,20 @@ class EventSourcingRepository implements Repository
     /**
      * {@inheritdoc}
      */
+    public function loadUntilPlayhead($id, $playhead) : AggregateRoot
+    {
+        try {
+            $domainEventStream = $this->eventStore->load($id);
+            $streamUpToPlayhead = array_slice($domainEventStream->getIterator()->getArrayCopy(), 0, $playhead + 1);
+            return $this->aggregateFactory->create($this->aggregateClass, new DomainEventStream($streamUpToPlayhead));
+        } catch (EventStreamNotFoundException $e) {
+            throw AggregateNotFoundException::create($id, $e);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function save(AggregateRoot $aggregate): void
     {
         // maybe we can get generics one day.... ;)
