@@ -68,6 +68,29 @@ final class InMemoryEventStore implements EventStore, EventStoreManagement
     /**
      * {@inheritdoc}
      */
+    public function loadFromPlayheadSlice($id, int $playheadStart, int $playheadEnd) : DomainEventStream
+    {
+        $id = (string) $id;
+
+        if (!isset($this->events[$id])) {
+            return new DomainEventStream([]);
+        }
+
+        return new DomainEventStream(
+            array_values(
+                array_filter(
+                    $this->events[$id],
+                    function ($event) use ($playheadStart, $playheadEnd) {
+                        return $playheadStart <= $event->getPlayhead() && $playheadEnd >= $event->getPlayhead();
+                    }
+                )
+            )
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function append($id, DomainEventStream $eventStream): void
     {
         $id = (string) $id;

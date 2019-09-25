@@ -84,6 +84,14 @@ final class ConcurrencyConflictResolvingEventStore implements EventStore
         return $this->eventStore->loadFromPlayhead($id, $playhead);
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function loadFromPlayheadSlice($id, int $playheadStart, int $playheadEnd): DomainEventStream
+    {
+        return $this->eventStore->loadFromPlayheadSlice($id, $playheadStart, $playheadEnd);
+    }
+
     private function getCurrentPlayhead(DomainEventStream $committedEvents): int
     {
         $events = iterator_to_array($committedEvents);

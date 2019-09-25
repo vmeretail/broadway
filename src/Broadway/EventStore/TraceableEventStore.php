@@ -76,6 +76,15 @@ final class TraceableEventStore implements EventStore
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function loadFromPlayheadSlice($id, int $playheadStart, int $playheadEnd): DomainEventStream
+    {
+        return $this->eventStore->loadFromPlayheadSlice($id, $playheadStart, $playheadEnd);
+    }
+
+
+    /**
      * Start tracing.
      */
     public function trace(): void
