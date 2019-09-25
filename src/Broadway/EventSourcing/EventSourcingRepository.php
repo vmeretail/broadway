@@ -77,9 +77,8 @@ class EventSourcingRepository implements Repository
     public function loadUntilPlayhead($id, $playhead) : AggregateRoot
     {
         try {
-            $domainEventStream = $this->eventStore->load($id);
-            $streamUpToPlayhead = array_slice($domainEventStream->getIterator()->getArrayCopy(), 0, $playhead + 1);
-            return $this->aggregateFactory->create($this->aggregateClass, new DomainEventStream($streamUpToPlayhead));
+            $domainEventStream = $this->eventStore->loadFromPlayheadSlice($id, 0, intval($playhead));
+            return $this->aggregateFactory->create($this->aggregateClass, $domainEventStream);
         } catch (EventStreamNotFoundException $e) {
             throw AggregateNotFoundException::create($id, $e);
         }
