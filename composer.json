@@ -36,7 +36,7 @@
     ],
     "require-dev": {
         "monolog/monolog": "~1.8",
-        "phpunit/phpunit": "^6.0",
+        "phpunit/phpunit": "^8.3",
         "ramsey/uuid": "^3.0",
         "friendsofphp/php-cs-fixer": "^2.0",
         "malukenho/docheader": "^0.1.7"
@@ -60,7 +60,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.0.x-dev"
+            "dev-master": "3.0.x-dev"
         }
     }
 }
